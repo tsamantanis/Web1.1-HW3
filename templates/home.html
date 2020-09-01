@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<section class="weather-form">
+<section class="weather-form border shadow">
     <h2>What's the weather like today?</h1>
 
     <form action="/results" method="GET">
@@ -11,7 +11,7 @@
             <p>
                 <label>
                     Please enter your city: <br>
-                    <input type="text" name="city">
+                    <input type="text" name="city" class="border shadow-sm">
                 </label>
             </p>
 
@@ -32,13 +32,13 @@
             </p>
 
             <p>
-                <input type="submit" value="Submit">
+                <button type="submit" class="border shadow-sm">Submit</button>
             </p>
 
         </fieldset>
     </form>
 </section>
-<section class="weather-form">
+<section class="weather-form border shadow">
     <form action="historical_results" method="GET">
         <h2>See Historical Data</h1>
         <fieldset>
@@ -47,7 +47,7 @@
             <p>
                 <label>
                     Please enter your city: <br>
-                    <input type="text" name="city">
+                    <input type="text" name="city" class="border shadow-sm">
                 </label>
             </p>
 
@@ -70,13 +70,13 @@
             <p>
                 <label>
                     Please choose the date you'd like info on: <br>
-                
-                    <input type="date" name="date" min="{{ min_date.strftime('%Y-%m-%d') }}" max="{{ max_date.strftime('%Y-%m-%d') }}">
+
+                    <input type="date" name="date" min="{{ min_date.strftime('%Y-%m-%d') }}" max="{{ max_date.strftime('%Y-%m-%d') }}" class="border shadow-sm">
                 </label>
             </p>
 
             <p>
-                <input type="submit" value="Submit">
+                <button type="submit" class="border shadow-sm">Submit</button>
             </p>
         </fieldset>
     </form>
