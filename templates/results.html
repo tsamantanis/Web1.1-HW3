@@ -6,21 +6,38 @@
         TODO: Replace the hard-coded city and date below with data from the
         server
     #}
-    <h1>Weather in {{city_name}}</h1>
+    <h1>Weather in {{city}}</h1>
     <p>on Saturday, August 29, 2020</p>
 
     {#
         TODO: Add the temperature, description, humidity, wind speed, sunrise,
         & sunset below. Replace 'F' with the appropriate units.
     #}
-    <ul>
-        <li>Temperature: {{temp}} °{{units_letter}}</li>
-        <li>Description: {{description}}</li>
-        <li>Humidity: {{humidity}}%</li>
-        <li>Wind speed:  {{wind_speed}} miles/hour</li>
-        <li>Sunrise: {{sunrise}}</li>
-        <li>Sunset: {{sunset}}</li>
-    </ul>
-
+    <div class="grid-container">
+        <div class="grid-item border hover-animation">
+            <span class="tag">Temperature</span>
+            <h2 class="value">{{temp}}°{{units_letter}}</h2>
+        </div>
+        <div class="grid-item border hover-animation">
+            <span class="tag">Description</span>
+            <h2 class="value">{{description}}</h2>
+        </div>
+        <div class="grid-item border hover-animation">
+            <span class="tag">Humidity</span>
+            <h2 class="value">{{humidity}}%</h2>
+        </div>
+        <div class="grid-item border hover-animation">
+            <span class="tag">Wind Speed</span>
+            <h2 class="value">{{wind_speed}}mph</h2>
+        </div>
+        <div class="grid-item border hover-animation">
+            <span class="tag">Sunrise</span>
+            <h2 class="value-sm">{{sunrise}}</h2>
+        </div>
+        <div class="grid-item border hover-animation">
+            <span class="tag">Sunset</span>
+            <h2 class="value-sm">{{sunset}}</h2>
+        </div>
+    </div>
 </section>
 {% endblock %}

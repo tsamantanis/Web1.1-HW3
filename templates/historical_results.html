@@ -14,12 +14,24 @@
         TODO: Add the temperature, description, and min & max temperature below.
         Replace 'F' with the appropriate units.
     #}
-    <ul>
-        <li>Description: {{description}}</li>
-        <li>Temperature: {{temp}}° {{units_letter}}</li>
-        <li>Min: {{min_temp}}° {{units_letter}}</li>
-        <li>Max: {{max_temp}}° {{units_letter}}</li>
-    </ul>
+    <div class="grid-container">
+        <div class="grid-item border hover-animation">
+            <span class="tag">Description</span>
+            <h2 class="value">{{description}}</h2>
+        </div>
+        <div class="grid-item border hover-animation">
+            <span class="tag">Temperature</span>
+            <h2 class="value">{{temp}}°{{units_letter}}</h2>
+        </div>
+        <div class="grid-item border hover-animation">
+            <span class="tag">Min</span>
+            <h2 class="value">{{min_temp}}° {{units_letter}}</h2>
+        </div>
+        <div class="grid-item border hover-animation">
+            <span class="tag">Max</span>
+            <h2 class="value">{{max_temp}}° {{units_letter}}</h2>
+        </div>
+    </div>
 
 
     {#
