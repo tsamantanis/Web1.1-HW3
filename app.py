@@ -1,6 +1,6 @@
 import jinja2
-import matplotlib
-import matplotlib.pyplot as plt
+# import matplotlib
+# import matplotlib.pyplot as plt
 import os
 import pprint
 import pytz
@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, send_file
 from geopy.geocoders import Nominatim
 from io import BytesIO
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+# from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 
 ################################################################################
@@ -30,8 +30,8 @@ pp = pprint.PrettyPrinter(indent=4)
 
 # Settings for image endpoint
 # Written with help from http://dataviztalk.blogspot.com/2016/01/serving-matplotlib-plot-that-follows.html
-matplotlib.use('agg')
-plt.style.use('ggplot')
+# matplotlib.use('agg')
+# plt.style.use('ggplot')
 
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
@@ -127,6 +127,24 @@ def get_lat_lon(city_name):
         return location.latitude, location.longitude
     return 0, 0
 
+# Helper function to create Chart.js line chart for historical results
+def get_chart_data(lat, lon, units, date):
+    """Create and return list of temperatures from the historical data"""
+    url = 'http://api.openweathermap.org/data/2.5/onecall/timemachine'
+    params = {
+        'appid': API_KEY,
+        'lat': lat,
+        'lon': lon,
+        'units': units,
+        'dt': date
+    }
+    result_json = requests.get(url, params=params).json()
+    hour_results = result_json['hourly']
+
+    hours = range(24)
+    temps = [r['temp'] for r in hour_results]
+    return temps
+
 
 @app.route('/historical_results')
 def historical_results():
@@ -162,7 +180,7 @@ def historical_results():
     result_json = requests.get(url, params=params).json()
 
     # Uncomment the line below to see the results of the API call!
-    pp.pprint(result_json)
+    # pp.pprint(result_json)
 
     result_current = result_json['current']
     result_hourly = result_json['hourly']
@@ -179,7 +197,8 @@ def historical_results():
         'description': result_current['weather'][0]['description'],
         'temp': result_current['temp'],
         'min_temp': get_min_temp(result_hourly),
-        'max_temp': get_max_temp(result_hourly)
+        'max_temp': get_max_temp(result_hourly),
+        'chart_data': get_chart_data(latitude, longitude, units, date_in_seconds)
     }
 
     return render_template('historical_results.html', **context)
@@ -187,57 +206,58 @@ def historical_results():
 
 ################################################################################
 ## IMAGES
+## Comment this part since it is not being used
 ################################################################################
 
-def create_image_file(xAxisData, yAxisData, xLabel, yLabel):
-    """
-    Creates and returns a line graph with the given data.
-    Written with help from http://dataviztalk.blogspot.com/2016/01/serving-matplotlib-plot-that-follows.html
-    """
-    fig, _ = plt.subplots()
-    plt.plot(xAxisData, yAxisData)
-    plt.xlabel(xLabel)
-    plt.ylabel(yLabel)
-    canvas = FigureCanvas(fig)
-    img = BytesIO()
-    fig.savefig(img)
-    img.seek(0)
-    return send_file(img, mimetype='image/png')
-
-@app.route('/graph/<lat>/<lon>/<units>/<date>')
-def graph(lat, lon, units, date):
-    """
-    Returns a line graph with data for the given location & date.
-    @param lat The latitude.
-    @param lon The longitude.
-    @param units The units (imperial, metric, or kelvin)
-    @param date The date, in the format %Y-%m-%d.
-    """
-    date_obj = datetime.strptime(date, '%Y-%m-%d')
-    date_in_seconds = date_obj.strftime('%s')
-
-
-    url = 'http://api.openweathermap.org/data/2.5/onecall/timemachine'
-    params = {
-        'appid': API_KEY,
-        'lat': lat,
-        'lon': lon,
-        'units': units,
-        'dt': date_in_seconds
-    }
-    result_json = requests.get(url, params=params).json()
-
-    hour_results = result_json['hourly']
-
-    hours = range(24)
-    temps = [r['temp'] for r in hour_results]
-    image = create_image_file(
-        hours,
-        temps,
-        'Hour',
-        f'Temperature ({get_letter_for_units(units)})'
-    )
-    return image
+# def create_image_file(xAxisData, yAxisData, xLabel, yLabel):
+#     """
+#     Creates and returns a line graph with the given data.
+#     Written with help from http://dataviztalk.blogspot.com/2016/01/serving-matplotlib-plot-that-follows.html
+#     """
+#     fig, _ = plt.subplots()
+#     plt.plot(xAxisData, yAxisData)
+#     plt.xlabel(xLabel)
+#     plt.ylabel(yLabel)
+#     canvas = FigureCanvas(fig)
+#     img = BytesIO()
+#     fig.savefig(img)
+#     img.seek(0)
+#     return send_file(img, mimetype='image/png')
+#
+# @app.route('/graph/<lat>/<lon>/<units>/<date>')
+# def graph(lat, lon, units, date):
+#     """
+#     Returns a line graph with data for the given location & date.
+#     @param lat The latitude.
+#     @param lon The longitude.
+#     @param units The units (imperial, metric, or kelvin)
+#     @param date The date, in the format %Y-%m-%d.
+#     """
+#     date_obj = datetime.strptime(date, '%Y-%m-%d')
+#     date_in_seconds = date_obj.strftime('%s')
+#
+#
+#     url = 'http://api.openweathermap.org/data/2.5/onecall/timemachine'
+#     params = {
+#         'appid': API_KEY,
+#         'lat': lat,
+#         'lon': lon,
+#         'units': units,
+#         'dt': date_in_seconds
+#     }
+#     result_json = requests.get(url, params=params).json()
+#
+#     hour_results = result_json['hourly']
+#
+#     hours = range(24)
+#     temps = [r['temp'] for r in hour_results]
+#     image = create_image_file(
+#         hours,
+#         temps,
+#         'Hour',
+#         f'Temperature ({get_letter_for_units(units)})'
+#     )
+#     return image
 
 @app.errorhandler(404)
 def show_404(error):

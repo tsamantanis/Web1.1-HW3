@@ -39,7 +39,71 @@
         temperature over time.
     #}
 
-     <img src="/graph/{{ lat }}/{{ lon }}/{{ units }}/{{ date.strftime('%Y-%m-%d') }}">
+    <!-- Comment ugly (sorry) chart -->
+     <!-- <img src="/graph/{{ lat }}/{{ lon }}/{{ units }}/{{ date.strftime('%Y-%m-%d') }}"> -->
+
+     <!-- Create Chart.js canvas -->
+     <canvas id="myChart" width="400" height="200" class="mt-10"></canvas>
+     <!-- Import Chart.js -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+     <!-- Create chart -->
+     <script>
+         // Format chart data to pass into the chart
+         const charData = {
+             labels: [
+                 {% for item in range(24) %} // Jinja syntax ftw
+                     {% if item < 10 %}
+                        "0{{item}} AM",
+                     {% elif item >= 10 and item < 12 %}
+                         "{{item}} AM",
+                     {% else %}
+                         "{{item}} PM",
+                     {% endif %}
+                 {% endfor %}
+             ],
+             datasets: [{
+                 label: 'Temperature in °{{units_letter}}',
+                 backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                 borderColor: 'rgba(255, 159, 64, 1)',
+                 pointBackgroundColor: 'rgba(255, 159, 64, 1)',
+                 borderWidth: 1,
+                 data: [
+                     {% for item in chart_data %}
+                         "{{item}}",
+                     {% endfor %}
+                 ]
+             }]
+         }
+         let ctx = document.getElementById('myChart').getContext('2d'); // Get HTML element and assign it to ctx
+        // Create chart instance
+         const myChart = new Chart(ctx, {
+             type: 'line',
+
+            // The data for our dataset
+            data: charData,
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return value + '°{{units_letter}}';
+                            }
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Temperature'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }]
+                }
+            }
+     });
+     </script>
 
 </section>
 
