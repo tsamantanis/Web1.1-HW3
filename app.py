@@ -141,6 +141,9 @@ def historical_results():
 
     latitude, longitude = get_lat_lon(city)
 
+    # Stretch challenge error handling. The get_lat_lon method returns 0,0 when the city is not found
+    if latitude == 0 and lon == 0:
+        return redirect(Exception)
     url = 'http://api.openweathermap.org/data/2.5/onecall/timemachine'
 
     params = {
@@ -236,6 +239,20 @@ def graph(lat, lon, units, date):
     )
     return image
 
+@app.errorhandler(404)
+def show_404(error):
+    """Display a 404 error page"""
+    return render_template('404.html'), 404
+
+@app.errorhandler(400)
+def show_400(error):
+    """Display an error page when a form submission is missing an input value"""
+    return render_template('400.html'), 400
+
+@app.errorhandler(Exception)
+def show_500(error):
+    """Display an error page when a city name is invalid or not found"""
+    return render_template('500.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
