@@ -6,7 +6,7 @@
         TODO: Replace the hard-coded city and date below with data from the
         server.
     #}
-    <h1>Weather in {{city}}</h1>
+    <h1>Weather in {{city}} <img src="{{icon_src}}" class="middle"></h1>
     <p>on Saturday, August 29, 2020</p>
 
 
@@ -25,11 +25,11 @@
         </div>
         <div class="grid-item border hover-animation">
             <span class="tag">Min</span>
-            <h2 class="value">{{min_temp}}° {{units_letter}}</h2>
+            <h2 class="value">{{min_temp}}°{{units_letter}}</h2>
         </div>
         <div class="grid-item border hover-animation">
             <span class="tag">Max</span>
-            <h2 class="value">{{max_temp}}° {{units_letter}}</h2>
+            <h2 class="value">{{max_temp}}°{{units_letter}}</h2>
         </div>
     </div>
 

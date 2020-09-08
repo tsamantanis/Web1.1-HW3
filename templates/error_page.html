@@ -2,9 +2,9 @@
 {% block content %}
 
     <section class="border shadow">
-        <h1>Oops! Looks like you are using an invalid URL.</h1>
+        <h1>{{ message }}</h1>
         <form class="" action="/" method="get">
-            <button type="submit" class="border hover-animation">Home</button>
+            <button type="submit" class="border hover-animation">{{ button }}</button>
         </form>
     </section>
 

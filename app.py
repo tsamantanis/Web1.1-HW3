@@ -13,7 +13,7 @@ from flask import Flask, render_template, request, send_file
 from geopy.geocoders import Nominatim
 from io import BytesIO
 # from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-
+from dateutil.tz import *
 
 ################################################################################
 ## SETUP
@@ -78,7 +78,7 @@ def results():
     result_json = requests.get(url, params=params).json()
 
     # Uncomment the line below to see the results of the API call!
-    # pp.pprint(result_json)
+    pp.pprint(result_json)
 
     # TODO: Replace the empty variables below with their appropriate values.
     # You'll need to retrieve these from the result_json object above.
@@ -86,16 +86,19 @@ def results():
     # For the sunrise & sunset variables, I would recommend to turn them into
     # datetime objects. You can do so using the `datetime.fromtimestamp()`
     # function.
+    date_local = datetime.now()
     context = {
-        'date': datetime.now(),
+        'date': date_local,
         'city': result_json['name'],
         'description': result_json['weather'][0]['description'],
         'temp': result_json['main']['temp'],
         'humidity': result_json['main']['humidity'],
         'wind_speed': result_json['wind']['speed'],
-        'sunrise': datetime.utcfromtimestamp(int(result_json['sys']['sunrise'])).strftime('%Y-%m-%d %H:%M:%S'), # I used this answer to format the date https://stackoverflow.com/questions/3682748/converting-unix-timestamp-string-to-readable-date
-        'sunset': datetime.utcfromtimestamp(int(result_json['sys']['sunset'])).strftime('%Y-%m-%d %H:%M:%S'),
-        'units_letter': get_letter_for_units(units)
+        'sunrise': datetime.utcfromtimestamp(int(result_json['sys']['sunrise'])).strftime('%Y-%m-%d %H:%M %p'), # I used this answer to format the date https://stackoverflow.com/questions/3682748/converting-unix-timestamp-string-to-readable-date
+        'sunset': datetime.utcfromtimestamp(int(result_json['sys']['sunset'])).strftime('%Y-%m-%d %H:%M %p'),
+        'units_letter': get_letter_for_units(units),
+        # add icon
+        'icon_src': 'http://openweathermap.org/img/wn/' + result_json['weather'][0]['icon'] + '.png'
     }
 
     return render_template('results.html', **context)
@@ -152,9 +155,8 @@ def historical_results():
     # TODO: Use 'request.args' to retrieve the city & units from the query
     # parameters.
     city = request.args['city']
-    date = '2020-08-30'
     units = request.args['units']
-    date_obj = datetime.strptime(date, '%Y-%m-%d')
+    date_obj = datetime.now()
     date_in_seconds = date_obj.strftime('%s')
 
     latitude, longitude = get_lat_lon(city)
@@ -198,7 +200,9 @@ def historical_results():
         'temp': result_current['temp'],
         'min_temp': get_min_temp(result_hourly),
         'max_temp': get_max_temp(result_hourly),
-        'chart_data': get_chart_data(latitude, longitude, units, date_in_seconds)
+        'chart_data': get_chart_data(latitude, longitude, units, date_in_seconds),
+        # add icon
+        'icon_src': 'http://openweathermap.org/img/wn/' + result_current['weather'][0]['icon'] + '.png'
     }
 
     return render_template('historical_results.html', **context)
@@ -262,17 +266,17 @@ def historical_results():
 @app.errorhandler(404)
 def show_404(error):
     """Display a 404 error page"""
-    return render_template('404.html'), 404
+    return render_template('error_page.html', message = "Oops! Looks like you are using an invalid URL.", button = "Home"), 404
 
 @app.errorhandler(400)
 def show_400(error):
     """Display an error page when a form submission is missing an input value"""
-    return render_template('400.html'), 400
+    return render_template('error_page.html', message = "There was an error in your form submission.\n \nCheck that all fields are completed and try again.", button = "Try Again"), 400
 
 @app.errorhandler(Exception)
 def show_500(error):
     """Display an error page when a city name is invalid or not found"""
-    return render_template('500.html')
+    return render_template('error_page.html', message = "We couldn't find the city you entered. \n \nPlease check the grammar and try again.", button = "Try Again")
 
 if __name__ == '__main__':
     app.run(debug=True)

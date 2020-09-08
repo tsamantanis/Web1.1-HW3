@@ -87,6 +87,10 @@ li {
     padding-top: 40%;
 }
 
+.with-icon {
+    padding-top: 12.5% !important;
+}
+
 .hover-animation:hover {
     box-shadow: 4px 4px 11px rgba(0, 0, 0, 0.4);
     border: none;
@@ -115,4 +119,8 @@ li {
 
 .mt-10 {
     margin-top: 10%;
+}
+
+.middle {
+    vertical-align: middle;
 }
