@@ -2,18 +2,8 @@
 {% block content %}
 
 <section class="weather-form border shadow">
-    {#
-        TODO: Replace the hard-coded city and date below with data from the
-        server.
-    #}
     <h1>Weather in {{city}} <img src="{{icon_src}}" class="middle"></h1>
     <p>on Saturday, August 29, 2020</p>
-
-
-    {#
-        TODO: Add the temperature, description, and min & max temperature below.
-        Replace 'F' with the appropriate units.
-    #}
     <div class="grid-container">
         <div class="grid-item border hover-animation">
             <span class="tag">Description</span>
@@ -32,16 +22,6 @@
             <h2 class="value">{{max_temp}}°{{units_letter}}</h2>
         </div>
     </div>
-
-
-    {#
-        TODO: Uncomment the following image tag to display a graph of the
-        temperature over time.
-    #}
-
-    <!-- Comment ugly (sorry) chart -->
-     <!-- <img src="/graph/{{ lat }}/{{ lon }}/{{ units }}/{{ date.strftime('%Y-%m-%d') }}"> -->
-
      <!-- Create Chart.js canvas -->
      <canvas id="myChart" width="400" height="200" class="mt-10"></canvas>
      <!-- Import Chart.js -->
@@ -78,7 +58,6 @@
         // Create chart instance
          const myChart = new Chart(ctx, {
              type: 'line',
-
             // The data for our dataset
             data: charData,
             options: {

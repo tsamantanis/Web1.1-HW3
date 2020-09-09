@@ -60,8 +60,6 @@ def get_letter_for_units(units):
 @app.route('/results')
 def results():
     """Displays results for current weather conditions."""
-    # TODO: Use 'request.args' to retrieve the city & units from the query
-    # parameters.
     city = request.args['city']
     units = request.args['units']
 
@@ -70,23 +68,11 @@ def results():
         "q": city,
         "appid": API_KEY,
         "units": units
-        # TODO: Enter query parameters here for the 'appid' (your api key),
-        # the city, and the units (metric or imperial).
-        # See the documentation here: https://openweathermap.org/current
     }
 
     result_json = requests.get(url, params=params).json()
-
-    # Uncomment the line below to see the results of the API call!
-    pp.pprint(result_json)
-
-    # TODO: Replace the empty variables below with their appropriate values.
-    # You'll need to retrieve these from the result_json object above.
-
-    # For the sunrise & sunset variables, I would recommend to turn them into
-    # datetime objects. You can do so using the `datetime.fromtimestamp()`
-    # function.
     date_local = datetime.now()
+
     context = {
         'date': date_local,
         'city': result_json['name'],
@@ -105,8 +91,6 @@ def results():
 
 def get_min_temp(results):
     """Returns the minimum temp for the given hourly weather objects."""
-    # TODO: Fill in this function to return the minimum temperature from the
-    # hourly weather data.
     min = 100
     for result in results:
         if result['temp'] < min:
@@ -115,8 +99,6 @@ def get_min_temp(results):
 
 def get_max_temp(results):
     """Returns the maximum temp for the given hourly weather objects."""
-    # TODO: Fill in this function to return the maximum temperature from the
-    # hourly weather data.
     max = 0
     for result in results:
         if result['temp'] > max:
@@ -152,8 +134,6 @@ def get_chart_data(lat, lon, units, date):
 @app.route('/historical_results')
 def historical_results():
     """Displays historical weather forecast for a given day."""
-    # TODO: Use 'request.args' to retrieve the city & units from the query
-    # parameters.
     city = request.args['city']
     units = request.args['units']
     date_obj = datetime.now()
@@ -172,23 +152,12 @@ def historical_results():
         "dt": date_in_seconds,
         "appid": API_KEY,
         "units": units
-        # TODO: Enter query parameters here for the 'appid' (your api key),
-        # latitude, longitude, units, & date (in seconds).
-        # See the documentation here (scroll down to "Historical weather data"):
-        # https://openweathermap.org/api/one-call-api
-
     }
 
     result_json = requests.get(url, params=params).json()
-
-    # Uncomment the line below to see the results of the API call!
-    # pp.pprint(result_json)
-
     result_current = result_json['current']
     result_hourly = result_json['hourly']
 
-    # TODO: Replace the empty variables below with their appropriate values.
-    # You'll need to retrieve these from the 'result_current' object above.
     context = {
         'city': city,
         'date': date_obj,
@@ -206,62 +175,6 @@ def historical_results():
     }
 
     return render_template('historical_results.html', **context)
-
-
-################################################################################
-## IMAGES
-## Comment this part since it is not being used
-################################################################################
-
-# def create_image_file(xAxisData, yAxisData, xLabel, yLabel):
-#     """
-#     Creates and returns a line graph with the given data.
-#     Written with help from http://dataviztalk.blogspot.com/2016/01/serving-matplotlib-plot-that-follows.html
-#     """
-#     fig, _ = plt.subplots()
-#     plt.plot(xAxisData, yAxisData)
-#     plt.xlabel(xLabel)
-#     plt.ylabel(yLabel)
-#     canvas = FigureCanvas(fig)
-#     img = BytesIO()
-#     fig.savefig(img)
-#     img.seek(0)
-#     return send_file(img, mimetype='image/png')
-#
-# @app.route('/graph/<lat>/<lon>/<units>/<date>')
-# def graph(lat, lon, units, date):
-#     """
-#     Returns a line graph with data for the given location & date.
-#     @param lat The latitude.
-#     @param lon The longitude.
-#     @param units The units (imperial, metric, or kelvin)
-#     @param date The date, in the format %Y-%m-%d.
-#     """
-#     date_obj = datetime.strptime(date, '%Y-%m-%d')
-#     date_in_seconds = date_obj.strftime('%s')
-#
-#
-#     url = 'http://api.openweathermap.org/data/2.5/onecall/timemachine'
-#     params = {
-#         'appid': API_KEY,
-#         'lat': lat,
-#         'lon': lon,
-#         'units': units,
-#         'dt': date_in_seconds
-#     }
-#     result_json = requests.get(url, params=params).json()
-#
-#     hour_results = result_json['hourly']
-#
-#     hours = range(24)
-#     temps = [r['temp'] for r in hour_results]
-#     image = create_image_file(
-#         hours,
-#         temps,
-#         'Hour',
-#         f'Temperature ({get_letter_for_units(units)})'
-#     )
-#     return image
 
 @app.errorhandler(404)
 def show_404(error):
