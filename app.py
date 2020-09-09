@@ -1,6 +1,4 @@
 import jinja2
-# import matplotlib
-# import matplotlib.pyplot as plt
 import os
 import pprint
 import pytz
@@ -12,12 +10,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, send_file
 from geopy.geocoders import Nominatim
 from io import BytesIO
-# from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from dateutil.tz import *
-
-################################################################################
-## SETUP
-################################################################################
 
 app = Flask(__name__)
 
@@ -25,24 +18,14 @@ app = Flask(__name__)
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
 
-# Load PrettyPrinter
+# Initialize Pretty Printer
 pp = pprint.PrettyPrinter(indent=4)
-
-# Settings for image endpoint
-# Written with help from http://dataviztalk.blogspot.com/2016/01/serving-matplotlib-plot-that-follows.html
-# matplotlib.use('agg')
-# plt.style.use('ggplot')
 
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
     jinja2.FileSystemLoader('data'),
 ])
 app.jinja_loader = my_loader
-
-
-################################################################################
-## ROUTES
-################################################################################
 
 @app.route('/')
 def home():
@@ -106,6 +89,7 @@ def get_max_temp(results):
     return max
 
 def get_lat_lon(city_name):
+    """Returns latitude and longitude for a given city name. Returns 0, 0 if city is not found"""
     geolocator = Nominatim(user_agent='Weather Application')
     location = geolocator.geocode(city_name)
     if location is not None:
